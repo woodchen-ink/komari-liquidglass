@@ -4,7 +4,7 @@
   "description": "Liquid glass theme for Komari Monitor",
   "version": "26.04.27-8fd401c",
   "author": "wood",
-  "url": "https://github.com/wood/komari-liquidglass",
+  "url": "https://github.com/woodchen-ink/komari-liquidglass",
   "preview": "preview.png",
   "configuration": {
     "type": "managed",
