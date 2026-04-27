@@ -71,3 +71,32 @@ export const NodeListSkeleton = ({ count = 4 }: { count?: number }) => (
     ))}
   </div>
 );
+
+// 图表骨架: 给 LoadChart/PingChart 切换时间窗口 / 加载远程数据时使用
+// 内部就是一块"图表区域"占位 + 几个图例点, 高度与真实图表一致 (h-64)
+export const ChartSkeleton = ({ height = 256 }: { height?: number }) => (
+  <div className="liquid-glass rounded-xl w-full p-4 flex flex-col gap-3">
+    <div className="flex items-center justify-between">
+      <div className="skeleton h-4 w-24" />
+      <div className="skeleton h-4 w-16" />
+    </div>
+    <div className="skeleton w-full" style={{ height }} />
+    <div className="flex gap-3 flex-wrap">
+      <div className="skeleton h-3 w-16" />
+      <div className="skeleton h-3 w-20" />
+      <div className="skeleton h-3 w-14" />
+    </div>
+  </div>
+);
+
+// 多块图表骨架(LoadChart 用): N 张并排
+export const ChartGridSkeleton = ({ count = 4 }: { count?: number }) => (
+  <div
+    className="gap-2 grid w-full"
+    style={{ gridTemplateColumns: "repeat(auto-fit, minmax(288px, 1fr))" }}
+  >
+    {Array.from({ length: count }).map((_, i) => (
+      <ChartSkeleton key={i} height={180} />
+    ))}
+  </div>
+);

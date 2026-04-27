@@ -143,17 +143,19 @@ export default function InstancePage() {
     return unsubscribe;
   }, [onRefresh, uuid]);
   // #region 布局
+  // 整页不滚动: 容器高度 = viewport - NavBar 占位; 左右两栏各自内部滚动,
+  // 避免滚动时 liquid-glass 的 SVG feDisplacementMap 因背景位移产生视觉抖动.
   return (
-    <div className="instance-page flex flex-row justify-center p-4 gap-4">
+    <div
+      className="instance-page w-full max-w-[1600px] mx-auto flex flex-row gap-4 px-1 md:px-2"
+      style={{ height: "calc(100vh - 5rem)" }}
+    >
       {showServerListInDetails && !isMobile && (
-        <div className="w-[300px] shrink-0 self-start sticky top-4">
-          <div
-            className="liquid-glass rounded-xl w-full overflow-hidden"
-            style={{ height: "calc(100vh - 2rem)" }}
-          >
+        <div className="w-[280px] shrink-0 h-full">
+          <div className="liquid-glass rounded-xl w-full h-full overflow-hidden">
             <Flex direction="column" gap="0" className="h-full min-h-0">
               <div
-                className="p-3"
+                className="p-3 shrink-0"
                 style={{ borderBottom: "1px solid rgba(255,255,255,0.18)" }}
               >
                 <Text size="2" weight="bold">
@@ -196,37 +198,40 @@ export default function InstancePage() {
           </div>
         </div>
       )}
-      <div className="flex flex-col h-full items-center gap-3 flex-1 min-w-0">
-        <div className="liquid-glass rounded-xl w-full max-w-[900px] flex flex-col gap-2 p-4">
-          <h1 className="flex items-center flex-wrap gap-2">
-            <Flag flag={node?.region ?? ""} />
-            <Text size="4" weight="bold" wrap="nowrap">
-              {node?.name ?? uuid}
-            </Text>
-            <Text size="1" wrap="nowrap" style={{ opacity: 0.55 }}>
-              {node?.uuid}
-            </Text>
-          </h1>
-          <DetailsGrid align="center" uuid={uuid ?? ""} />
+      {/* 主区: 自身内部滚动, 顶部头卡 + tab + 图表区 */}
+      <div className="flex-1 min-w-0 h-full overflow-y-auto overscroll-contain pr-1">
+        <div className="flex flex-col items-center gap-3 pb-4">
+          <div className="liquid-glass rounded-xl w-full flex flex-col gap-2 p-4">
+            <h1 className="flex items-center flex-wrap gap-2">
+              <Flag flag={node?.region ?? ""} />
+              <Text size="4" weight="bold" wrap="nowrap">
+                {node?.name ?? uuid}
+              </Text>
+              <Text size="1" wrap="nowrap" style={{ opacity: 0.55 }}>
+                {node?.uuid}
+              </Text>
+            </h1>
+            <DetailsGrid align="center" uuid={uuid ?? ""} />
+          </div>
+          <SegmentedControl.Root
+            radius="full"
+            value={chartView}
+            onValueChange={(value) => setChartView(value as "load" | "ping")}
+          >
+            <SegmentedControl.Item value="load">
+              {t("nodeCard.load")}
+            </SegmentedControl.Item>
+            <SegmentedControl.Item value="ping">
+              {t("nodeCard.ping")}
+            </SegmentedControl.Item>
+          </SegmentedControl.Root>
+          {/* Recharts */}
+          {chartView === "load" ? (
+            <LoadChart data={liveDataToRecords(uuid ?? "", recent)} />
+          ) : (
+            <PingChart uuid={uuid ?? ""} />
+          )}
         </div>
-        <SegmentedControl.Root
-          radius="full"
-          value={chartView}
-          onValueChange={(value) => setChartView(value as "load" | "ping")}
-        >
-          <SegmentedControl.Item value="load">
-            {t("nodeCard.load")}
-          </SegmentedControl.Item>
-          <SegmentedControl.Item value="ping">
-            {t("nodeCard.ping")}
-          </SegmentedControl.Item>
-        </SegmentedControl.Root>
-        {/* Recharts */}
-        {chartView === "load" ? (
-          <LoadChart data={liveDataToRecords(uuid ?? "", recent)} />
-        ) : (
-          <PingChart uuid={uuid ?? ""} />
-        )}
       </div>
     </div>
   );

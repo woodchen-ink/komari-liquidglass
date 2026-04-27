@@ -137,18 +137,18 @@ const Index = () => {
     // 节点列表未到位前: summary 卡 + 节点列表都用骨架
     if (isLoading || !nodeList) {
       return (
-        <>
+        <div className="w-full max-w-5xl mx-auto">
           <Callouts />
           <SummaryCardSkeleton />
           <NodeListSkeleton count={4} />
-        </>
+        </div>
       );
     }
 
     //#endregion
 
     return (
-      <>
+      <div className="w-full max-w-5xl mx-auto">
         <Callouts />
         <div className="summary-card liquid-glass rounded-xl p-4 mt-4 md:text-base text-sm relative">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
@@ -167,7 +167,7 @@ const Index = () => {
             liveData={live_data?.data ?? { online: [], data: {} }}
           />
         </Suspense>
-      </>
+      </div>
     );
   };
   return <InnerLayout />;
@@ -177,28 +177,8 @@ const Index = () => {
 const Callouts = () => {
   const [t] = useTranslation();
   const { showCallout } = useLiveData();
-  const ishttps = window.location.protocol === "https:";
   return (
     <Flex direction="column" gap="2" className="m-2">
-      <Callout.Root m="2" hidden={ishttps} color="red">
-        <Callout.Icon>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            viewBox="0 0 24 24"
-          >
-            <path
-              fill="currentColor"
-              d="M10.03 3.659c.856-1.548 3.081-1.548 3.937 0l7.746 14.001c.83 1.5-.255 3.34-1.969 3.34H4.254c-1.715 0-2.8-1.84-1.97-3.34zM12.997 17A.999.999 0 1 0 11 17a.999.999 0 0 0 1.997 0m-.259-7.853a.75.75 0 0 0-1.493.103l.004 4.501l.007.102a.75.75 0 0 0 1.493-.103l-.004-4.502z"
-            />
-          </svg>
-        </Callout.Icon>
-        <Callout.Text>
-          <Text size="2" weight="medium">
-            {t("warn_https")}
-          </Text>
-        </Callout.Text>
-      </Callout.Root>
       <Callout.Root m="2" hidden={showCallout} id="callout" color="tomato">
         <Callout.Icon>
           <svg

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Flex, SegmentedControl, Switch, Button } from "@radix-ui/themes";
 import { usePublicInfo } from "@/contexts/PublicInfoContext";
-import Loading from "@/components/loading";
+import { ChartSkeleton } from "@/components/Skeletons";
 import {
   ChartContainer,
   ChartTooltip,
@@ -371,18 +371,18 @@ const PingChart = ({ uuid }: { uuid: string }) => {
         </div>
       </div>
 
-      {loading && (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          <Loading />
+      {loading && !remoteData && (
+        <div className="w-full">
+          <ChartSkeleton height={320} />
         </div>
       )}
       {error && (
-        <div style={{ color: "red", textAlign: "center", width: "100%" }}>
+        <div style={{ color: "#f87171", textAlign: "center", width: "100%" }}>
           {error}
         </div>
       )}
       {latestValues.length > 0 ? (
-        <div className="liquid-glass rounded-xl p-4 w-full max-w-[900px] mb-2 relative">
+        <div className="liquid-glass rounded-xl p-4 w-full mb-2 relative">
           <Tips className="absolute top-0 right-0 m-2">
             <label>{t("chart.loss_tips")}</label>
           </Tips>
@@ -538,11 +538,11 @@ const PingChart = ({ uuid }: { uuid: string }) => {
           </div>
         </div>
       ) : (
-        <div className="w-full max-w-[900px] text-center text-muted-foreground mb-2">
+        <div className="w-full text-center text-muted-foreground mb-2">
           {t("common.none")}
         </div>
       )}
-      <div className="liquid-glass rounded-xl p-4 w-full max-w-[900px]">
+      <div className="liquid-glass rounded-xl p-4 w-full">
         {chartData.length === 0 ? (
           <div className="w-full h-40 flex items-center justify-center text-muted-foreground">
             {t("common.none")}
@@ -609,7 +609,7 @@ const PingChart = ({ uuid }: { uuid: string }) => {
         {/* Cut Peak 开关和显示/隐藏所有按钮 */}
         <div
           className="flex items-center justify-between gap-4"
-          style={{ display: loading ? "none" : "flex" }}
+          style={{ display: loading && !remoteData ? "none" : "flex" }}
         >
           <div className="flex items-center gap-2">
             <Switch

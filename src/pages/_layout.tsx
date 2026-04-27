@@ -12,8 +12,11 @@ const IndexLayout = () => {
       <div className="layout flex flex-col w-full min-h-screen relative">
         <DynamicBackground />
         <LiquidGlassEffect />
-        <main className="main-content w-full max-w-5xl mx-auto px-3 md:px-4 pb-8 relative z-10 flex-1">
-          <NavBar />
+        <main className="main-content w-full px-3 md:px-4 pb-8 relative z-10 flex-1">
+          {/* NavBar 仅占 5xl 宽度居中显示, 各路由自己决定内容宽度 */}
+          <div className="w-full max-w-5xl mx-auto">
+            <NavBar />
+          </div>
           <Outlet />
         </main>
       </div>

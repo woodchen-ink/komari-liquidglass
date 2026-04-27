@@ -21,7 +21,7 @@ import {
   YAxis,
 } from "recharts";
 import { usePublicInfo } from "@/contexts/PublicInfoContext";
-import Loading from "@/components/loading";
+import { ChartGridSkeleton } from "@/components/Skeletons";
 // #region 图表
 type LoadChartProps = {
   data: RecordFormat[];
@@ -102,9 +102,10 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
     }
   }
 
-  // 新增：根据 hoursView 拉取数据
+  // 根据 hoursView 拉取数据
+  // 优化: 切换时间窗口时不清空旧 remoteData (保留旧曲线作过渡), 只在最终覆盖
+  // 性能: GPU 合并改用 Map 索引, O(N+M) 替代 O(N*M*device_count)
   useEffect(() => {
-    // 找到当前 hoursView 对应的 hours
     const selected = avaliableView.find((v) => v.label === hoursView);
     if (!uuid) return;
     if (!selected || !selected.hours) {
@@ -115,83 +116,74 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
     }
     setLoading(true);
     setError(null);
-    fetch(`/api/records/load?uuid=${uuid}&hours=${selected.hours}`)
+    const controller = new AbortController();
+    fetch(`/api/records/load?uuid=${uuid}&hours=${selected.hours}`, {
+      signal: controller.signal,
+    })
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText);
         return res.json();
       })
       .then((resp) => {
-        const records = resp.data?.records || [];
-        const gpuDevices = resp.data?.gpu_devices || {};
+        const records: RecordFormat[] = resp.data?.records || [];
+        const gpuDevices: Record<string, { records?: any[] }> =
+          resp.data?.gpu_devices || {};
 
-        // 合并基础记录和GPU数据
-        const mergedRecords = records.map((record: RecordFormat) => {
-          const gpuDetailed = [];
+        // 把每个 GPU 设备的 records 预先索引成 Map<timestampMs, gpuRecord>, 一次性 O(M)
+        const gpuIndex: Array<Map<number, any>> = [];
+        for (const deviceIndex in gpuDevices) {
+          const map = new Map<number, any>();
+          const arr = gpuDevices[deviceIndex]?.records || [];
+          for (const gr of arr) {
+            map.set(new Date(gr.time).getTime(), gr);
+          }
+          gpuIndex.push(map);
+        }
 
-          // 遍历所有GPU设备，找到对应时间的GPU数据
-          for (const deviceIndex in gpuDevices) {
-            const device = gpuDevices[deviceIndex];
-            const gpuRecord = device.records?.find(
-              (gr: any) =>
-                new Date(gr.time).getTime() === new Date(record.time).getTime()
-            );
-
-            if (gpuRecord) {
+        // O(N * deviceCount), 每条 record 在每个 device map 里 O(1) 查询
+        const mergedRecords: RecordFormat[] = records.map((record) => {
+          const ts = new Date(record.time).getTime();
+          const gpuDetailed: any[] = [];
+          for (const map of gpuIndex) {
+            const gr = map.get(ts);
+            if (gr) {
               gpuDetailed.push({
-                usage: gpuRecord.utilization,
-                memory: (gpuRecord.mem_used / gpuRecord.mem_total) * 100,
-                temperature: gpuRecord.temperature,
-                device_index: gpuRecord.device_index,
-                device_name: gpuRecord.device_name,
-                mem_total: gpuRecord.mem_total,
-                mem_used: gpuRecord.mem_used,
+                usage: gr.utilization,
+                memory: (gr.mem_used / gr.mem_total) * 100,
+                temperature: gr.temperature,
+                device_index: gr.device_index,
+                device_name: gr.device_name,
+                mem_total: gr.mem_total,
+                mem_used: gr.mem_used,
               });
             }
           }
-
           return {
             ...record,
             gpu_detailed: gpuDetailed.length > 0 ? gpuDetailed : undefined,
           };
         });
 
-        // 按照时间升序排序
+        // 按时间升序排序
         mergedRecords.sort(
-          (a: RecordFormat, b: RecordFormat) =>
-            new Date(a.time).getTime() - new Date(b.time).getTime()
+          (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
         );
-        // // 根据所选视图推导采样间隔，并对远程数据做瘦身，仅保留绘图需要的点数，避免高频数据占用内存
-        // const selectedHours = selected.hours ?? 24;
-        // const minute = 60; // s
-        // const hour = 60 * 60; // s
-        // // 与下方 chartData 的间隔策略保持一致
-        // const intervalSec =
-        //   selectedHours > 120
-        //     ? hour
-        //     : selectedHours === 4
-        //     ? minute
-        //     : 15 * minute;
-        // const totalSec = selectedHours * 3600;
-        // const maxNeededPoints = Math.max(
-        //   1,
-        //   Math.floor(totalSec / intervalSec) + 2
-        // );
-        // // 只保留末尾需要的数量（避免保留更高频的秒级数据）
-        // const thinned = mergedRecords.slice(-maxNeededPoints);
         setRemoteData(mergedRecords);
         setLoading(false);
       })
       .catch((err) => {
+        if (err?.name === "AbortError") return;
         setError(err.message || "Error");
         setLoading(false);
       });
+    return () => controller.abort();
   }, [hoursView, uuid]);
 
   // colors
   const colors = ["#F38181", "#FCE38A", "#EAFFD0", "#95E1D3"];
   const primaryColor = colors[0];
   const secondaryColor = colors[1];
-  const cn = "liquid-glass rounded-xl p-4 max-w-72 min-w-72 flex flex-col w-full h-full gap-4";
+  const cn = "liquid-glass rounded-xl p-4 min-w-0 flex flex-col w-full h-full gap-4";
   const chartMargin = {
     top: 0,
     right: 16,
@@ -299,21 +291,19 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
           </SegmentedControl.Root>
         </div>
       </div>
-      {/* 新增 loading/error 提示 */}
-      {loading && (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          <Loading />
-        </div>
-      )}
       {error && (
-        <div style={{ color: "red", textAlign: "center", width: "100%" }}>
+        <div style={{ color: "#f87171", textAlign: "center", width: "100%" }}>
           {error}
         </div>
       )}
+      {/* 切换时间窗口期间显示骨架占位; 一旦 remoteData 到位即被真实图表替换 */}
+      {loading && !remoteData && <ChartGridSkeleton count={4} />}
       <div
-        className="gap-2 grid w-full justify-items-center mx-auto max-w-[900px]"
+        className="gap-2 grid w-full justify-items-stretch"
         style={{
           gridTemplateColumns: "repeat(auto-fit, minmax(288px, 1fr))",
+          opacity: loading && remoteData ? 0.55 : 1,
+          transition: "opacity 0.2s",
         }}
       >
         {/* CPU */}
