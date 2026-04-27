@@ -56,7 +56,12 @@ ErrorBoundary → BrowserRouter → ThemeContext → Radix <Theme> → RPC2Provi
 
 ## 构建产出
 - `dist/`：静态资源
-- 主题打包：`dist/` + 根目录的 `komari-theme.json` → 压缩为 ZIP，在 Komari 后台主题管理上传
+- 主题打包：`dist/` + 根目录的 `komari-theme.json` + `preview.png` → 压缩为 ZIP，在 Komari 后台主题管理上传
+
+## 自动发布 (`.github/workflows/release.yaml`)
+- 触发：推送到 `radix` 分支，或在 Actions 页面手动 `workflow_dispatch`
+- 流程：`npm ci` → `npm run build` → 注入版本（`YY.MM.DD-shortsha`）到 `komari-theme.json` → 打包 `dist/ + komari-theme.json + preview.png` 为 `komari-liquidglass-vYY.MM.DD-shortsha.zip` → 同步上传 GitHub Release（tag 同名）+ artifact
+- 安装：在 Releases 页面下载该 zip，上传到 Komari 后台 → 主题管理
 
 ## 已知约定
 - 禁止使用 `localStorage` 存认证态（保持 Komari 现有 cookie 机制）

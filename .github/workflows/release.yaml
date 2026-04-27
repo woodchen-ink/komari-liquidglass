@@ -17,7 +17,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 取全量历史以便生成自动 changelog
+          fetch-depth: 0      # 取全量历史以便生成自动 changelog
+          ref: ${{ github.ref }} # 显式跟踪当前分支, 便于回写 commit
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,10 +35,11 @@ jobs:
       - name: Compute version metadata
         id: meta
         run: |
-          VERSION_DATE=$(date +"%y.%m.%d")
+          VERSION_DATE=$(date +"%y.%m.%d")    # 可读日期, 用于人看 (含点)
           COMMIT_HASH=$(git rev-parse --short HEAD)
+          # version 字段写入 komari-theme.json, 沿用 SemVer 风格的点号; tag/zip 用连字符替代
           VERSION="${VERSION_DATE}-${COMMIT_HASH}"
-          TAG="v${VERSION}"
+          TAG="v$(echo "$VERSION" | tr '.' '-')"
           ZIP_NAME="komari-liquidglass-${TAG}.zip"
 
           echo "VERSION_DATE=${VERSION_DATE}" >> "$GITHUB_ENV"
@@ -52,12 +54,25 @@ jobs:
       - name: Inject version into komari-theme.json
         run: |
           jq --arg version "$VERSION" \
-             --arg desc "Komari Liquid Glass theme (commit: $COMMIT_HASH)" \
-             '.version = $version | .description = $desc' \
+             '.version = $version' \
              komari-theme.json > komari-theme-updated.json
           mv komari-theme-updated.json komari-theme.json
           echo "Theme manifest:"
           cat komari-theme.json
+
+      - name: Commit version bump back to repo
+        # 把更新后的 komari-theme.json 写回 radix 分支; commit message 带 [skip ci] 避免递归触发本 workflow
+        if: github.event_name == 'push' && github.ref == 'refs/heads/radix'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet komari-theme.json; then
+            echo "komari-theme.json unchanged, skip commit"
+            exit 0
+          fi
+          git add komari-theme.json
+          git commit -m "chore(release): bump theme version to ${VERSION} [skip ci]"
+          git push origin HEAD:refs/heads/radix
 
       - name: Verify required files
         run: |

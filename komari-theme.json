@@ -1,11 +1,11 @@
 {
-  "name": "Komari",
-  "short": "default",
-  "description": "Komari default theme",
+  "name": "Komari Liquid Glass",
+  "short": "liquid-glass",
+  "description": "Liquid glass theme for Komari Monitor",
   "version": "1.0.0",
-  "author": "Akizon77",
-  "url": "https://github.com/komari-monitor/komari-web",
-  "preview": "dist/assets/edit_117847723_p0.png",
+  "author": "wood",
+  "url": "https://github.com/wood/komari-liquidglass",
+  "preview": "preview.png",
   "configuration": {
     "type": "managed",
     "name": {
