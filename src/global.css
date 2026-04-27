@@ -65,73 +65,76 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* CZL 设计令牌：黑白灰主导 + #2EA7E0 仅作 brand/ring；不使用蓝色作 primary */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #f6f7f8;          /* 页面浅灰底 */
+  --foreground: #0a0a0a;          /* 正文近黑 */
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;              /* 主 CTA 中性近黑 */
+  --primary-foreground: #fafafa;
+  --secondary: #f1f2f4;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f6f7f8;
+  --muted-foreground: #525252;
+  --accent: #eeeff1;               /* 浅灰 hover 色（保留 shadcn 语义，不使用品牌色） */
+  --accent-foreground: #0a0a0a;
+  --destructive: #dc2626;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --brand: #2ea7e0;                /* CZL 品牌色，仅用于 ring 和极少品牌点缀 */
+  --ring: #2ea7e0;                 /* 焦点光晕（唯一允许 brand 高频使用的位置） */
+  --chart-1: #5b8fd9;
+  --chart-2: #4fae7e;
+  --chart-3: #e89a4b;
+  --chart-4: #a874d6;
+  --chart-5: #e66a8e;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #0a0a0a;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #eeeff1;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #2ea7e0;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+.dark, .dark-theme {
+  --background: #171718;
+  --foreground: #ededed;
+  --card: #212121;
+  --card-foreground: #ededed;
+  --popover: #2a2a2a;
+  --popover-foreground: #ededed;
+  --primary: #fafafa;              /* 暗色模式主 CTA 反相为近白底 */
+  --primary-foreground: #0a0a0a;
+  --secondary: #262626;
+  --secondary-foreground: #ededed;
+  --muted: #1c1c1e;
+  --muted-foreground: #a1a1a1;
+  --accent: #262626;
+  --accent-foreground: #ededed;
+  --destructive: #f87171;
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --brand: #4fb8e8;                /* 暗色下提亮一档保持感知一致 */
+  --ring: #4fb8e8;
+  --chart-1: #7faeec;
+  --chart-2: #6dc498;
+  --chart-3: #f2b374;
+  --chart-4: #c295e8;
+  --chart-5: #f088a8;
+  --sidebar: #212121;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #2a2a2a;
+  --sidebar-ring: #4fb8e8;
 }
 
 @layer base {
@@ -165,4 +168,241 @@
 body, * {
   scrollbar-width: thin;
   scrollbar-color: rgba(80,80,80,0.4) transparent;
+}
+
+/* ==============================================
+ * Liquid Glass —— iOS 26 真折射玻璃
+ *
+ * backdrop-filter: url(#filter) 由 LiquidGlassEffect.tsx 在运行时注入,
+ * SVG feDisplacementMap 让背景在元素边缘真实弯曲折射, 中心区保持清晰.
+ * 以下样式只负责: 透明底 / 三层边光 / 阴影 / 不支持时退化为普通毛玻璃.
+ * ============================================== */
+
+.liquid-glass {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 6px 20px rgba(0, 0, 0, 0.22),
+    0 18px 40px rgba(0, 0, 0, 0.16);
+  border: none;
+  transition: box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.liquid-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
+.liquid-glass:hover {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
+    0 8px 24px rgba(0, 0, 0, 0.26),
+    0 20px 44px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass,
+  .liquid-glass:hover {
+    transition: none;
+  }
+}
+
+/* 顶部总览卡片 (.summary-card) 内文字统一白色 */
+.summary-card,
+.summary-card * {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.summary-card .text-muted-foreground,
+.summary-card [class*="text-muted-foreground"] {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* 节点详情页 (.instance-page) 整体白字适配玻璃背景 */
+.instance-page,
+.instance-page * {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.instance-page .text-muted-foreground,
+.instance-page [class*="text-muted-foreground"] {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* Radix SegmentedControl 在玻璃背景下: 半透明轨道 + 白底选中态 + 深色文字 */
+.instance-page .rt-SegmentedControlRoot {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 选中指示条 (Radix 用伪元素或 indicator 元素呈现高亮背景) */
+.instance-page .rt-SegmentedControlIndicator::before,
+.instance-page .rt-SegmentedControlItemSeparator {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* 选中项文字: 强制深色 + 去掉白字阴影 */
+.instance-page .rt-SegmentedControlItem[data-state="on"] *,
+.instance-page .rt-SegmentedControlItem[data-state="on"] .rt-SegmentedControlItemLabel,
+.instance-page .rt-SegmentedControlItem[data-state="on"] .rt-SegmentedControlItemLabelActive {
+  color: #0a0a0a !important;
+  text-shadow: none !important;
+}
+
+/* Recharts 在 .instance-page 下的可读性修正 */
+.instance-page .recharts-cartesian-axis-tick text,
+.instance-page .recharts-cartesian-axis-tick tspan {
+  fill: rgba(255, 255, 255, 0.85) !important;
+}
+
+.instance-page .recharts-cartesian-grid line {
+  stroke: rgba(255, 255, 255, 0.18) !important;
+}
+
+.instance-page .recharts-tooltip-cursor {
+  stroke: rgba(255, 255, 255, 0.4) !important;
+}
+
+.instance-page .recharts-legend-item-text {
+  color: rgba(255, 255, 255, 0.9) !important;
+  fill: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Tooltip 浮框: 黑底白字 + 玻璃效果 */
+.instance-page .recharts-tooltip-wrapper > div,
+.instance-page .recharts-default-tooltip {
+  background: rgba(15, 15, 18, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(12px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+.instance-page .recharts-tooltip-wrapper * {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: none !important;
+}
+
+.instance-page .recharts-tooltip-wrapper .text-muted-foreground,
+.instance-page .recharts-tooltip-wrapper [class*="text-muted-foreground"] {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* 折线加粗 + 高亮: 在玻璃背景上更醒目 */
+.instance-page .recharts-line .recharts-line-curve {
+  stroke-width: 2.5px !important;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.45));
+}
+
+/* 详情页侧边栏列表 hover / 选中态: 用半透明白替代 accent 主题色 */
+.instance-page .instance-sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.instance-page .instance-sidebar-item.active {
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* 服务器卡片 (.node-card) 内文字统一白色, 在背景图/暗遮罩上更清晰 */
+.node-card,
+.node-card * {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.node-card .text-muted-foreground,
+.node-card [class*="text-muted-foreground"] {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* 卡片内的 muted 背景在玻璃上要更暗一点才能看出层次 */
+.node-card .bg-muted\/60 {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.node-card .border-border {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 简化版毛玻璃 —— 用于 NavBar/Footer 等不需要折射感的小条目 */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
+}
+
+:is(.dark, .dark-theme) .glass-panel {
+  background: rgba(33, 33, 33, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* 渐变动画 */
+@keyframes gradient-shift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translate(30%, 20%) scale(1.1);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translate(-20%, 30%) scale(0.9);
+    opacity: 0.7;
+  }
+}
+
+@keyframes gradient-shift-reverse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translate(-25%, -15%) scale(1.15) rotate(120deg);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(15%, -25%) scale(0.95) rotate(240deg);
+    opacity: 0.6;
+  }
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 20s ease-in-out infinite;
+}
+
+.animate-gradient-shift-reverse {
+  animation: gradient-shift-reverse 25s ease-in-out infinite;
+}
+
+/* 脉冲动画 - 用于离线状态 */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+  }
+}
+
+.pulse-animation {
+  animation: pulse-glow 2s ease-in-out infinite;
 }

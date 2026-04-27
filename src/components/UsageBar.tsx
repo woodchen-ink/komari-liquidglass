@@ -24,30 +24,24 @@ const UsageBar = React.memo(
 
     if (compact) {
       return (
-        <Box style={{ width: "100%" }}>
-          <Box
+        <Box
+          style={{
+            width: "100%",
+            height: "6px",
+            backgroundColor: "var(--gray-5)",
+            borderRadius: "3px",
+            overflow: "hidden",
+          }}
+        >
+          <div
             style={{
-              width: "100%",
-              height: "6px",
-              backgroundColor: "var(--gray-5)",
+              height: "100%",
+              backgroundColor: `var(--${barColor}-9)`,
               borderRadius: "3px",
-              overflow: "hidden",
-              marginBottom: "2px",
+              width: `${clampedValue}%`,
+              transition: "width 0.5s ease-out",
             }}
-          >
-            <div
-              style={{
-                height: "100%",
-                backgroundColor: `var(--${barColor}-9)`,
-                borderRadius: "3px",
-                width: `${clampedValue}%`,
-                transition: "width 0.5s ease-out",
-              }}
-            />
-          </Box>
-          <label color="gray" className="text-sm">
-            {clampedValue.toFixed(1)}%
-          </label>
+          />
         </Box>
       );
     }

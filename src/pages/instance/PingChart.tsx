@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Flex, SegmentedControl, Card, Switch, Button } from "@radix-ui/themes";
+import { Flex, SegmentedControl, Switch, Button } from "@radix-ui/themes";
 import { usePublicInfo } from "@/contexts/PublicInfoContext";
 import Loading from "@/components/loading";
 import {
@@ -40,15 +40,16 @@ interface TaskInfo {
 // 移除旧的 REST API 响应类型，改用 RPC2 返回结构
 
 //const MAX_POINTS = 1000;
+// 玻璃背景 + 暗遮罩下的高亮折线配色: 统一明度, 中饱和, 7-8 色环避开品牌青蓝
 const colors = [
-  "#F38181",
-  "#347433",
-  "#898AC4",
-  "#03A6A1",
-  "#7AD6F0",
-  "#B388FF",
-  "#FF8A65",
-  "#FFD600",
+  "#7FAEEC", // 钴蓝
+  "#6DC498", // 翠绿
+  "#F2B374", // 暖橙
+  "#C295E8", // 紫罗兰
+  "#F088A8", // 玫粉
+  "#ECCE6E", // 金黄
+  "#FF8A65", // 朱红
+  "#A0E3D5", // 薄荷
 ];
 
 const PingChart = ({ uuid }: { uuid: string }) => {
@@ -381,7 +382,7 @@ const PingChart = ({ uuid }: { uuid: string }) => {
         </div>
       )}
       {latestValues.length > 0 ? (
-        <Card className="w-full max-w-[900px] mb-2">
+        <div className="liquid-glass rounded-xl p-4 w-full max-w-[900px] mb-2 relative">
           <Tips className="absolute top-0 right-0 m-2">
             <label>{t("chart.loss_tips")}</label>
           </Tips>
@@ -535,13 +536,13 @@ const PingChart = ({ uuid }: { uuid: string }) => {
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       ) : (
         <div className="w-full max-w-[900px] text-center text-muted-foreground mb-2">
           {t("common.none")}
         </div>
       )}
-      <Card className="w-full max-w-[900px]">
+      <div className="liquid-glass rounded-xl p-4 w-full max-w-[900px]">
         {chartData.length === 0 ? (
           <div className="w-full h-40 flex items-center justify-center text-muted-foreground">
             {t("common.none")}
@@ -594,9 +595,9 @@ const PingChart = ({ uuid }: { uuid: string }) => {
                       stroke={colors[idx % colors.length]}
                       dot={false}
                       isAnimationActive={false}
-                      strokeWidth={2}
+                      strokeWidth={2.5}
                       connectNulls={connect}
-                      type={cutPeak ? "basis" : "linear"}
+                      type={cutPeak ? "monotone" : "linear"}
                       hide={!!hiddenLines[String(task.id)]}
                     />
                   );
@@ -647,7 +648,7 @@ const PingChart = ({ uuid }: { uuid: string }) => {
             )}
           </Button>
         </div>
-      </Card>
+      </div>
     </Flex>
   );
 };

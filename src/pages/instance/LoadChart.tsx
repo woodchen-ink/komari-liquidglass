@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLiveData } from "../../contexts/LiveDataContext";
 import { useTranslation } from "react-i18next";
-import { Card, Flex, SegmentedControl } from "@radix-ui/themes";
+import { Flex, SegmentedControl } from "@radix-ui/themes";
 import { formatBytes } from "@/utils/unitHelper";
 import { useNodeList } from "@/contexts/NodeListContext";
 import fillMissingTimePoints, { type RecordFormat } from "@/utils/RecordHelper";
@@ -191,7 +191,7 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
   const colors = ["#F38181", "#FCE38A", "#EAFFD0", "#95E1D3"];
   const primaryColor = colors[0];
   const secondaryColor = colors[1];
-  const cn = "max-w-72 min-w-72 flex flex-col w-full h-full gap-4";
+  const cn = "liquid-glass rounded-xl p-4 max-w-72 min-w-72 flex flex-col w-full h-full gap-4";
   const chartMargin = {
     top: 0,
     right: 16,
@@ -317,7 +317,7 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
         }}
       >
         {/* CPU */}
-        <Card className={cn}>
+        <div className={cn}>
           {ChartTitle(
             "CPU",
             live_data?.cpu?.usage ? `${live_data.cpu.usage.toFixed(2)}%` : "-"
@@ -370,9 +370,9 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
               />
             </AreaChart>
           </ChartContainer>
-        </Card>
+        </div>
         {/* Ram */}
-        <Card className={cn}>
+        <div className={cn}>
           {ChartTitle(
             "Ram",
             <Flex gap="0" direction="column" align="end" className="text-sm">
@@ -488,9 +488,9 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
               />
             </AreaChart>
           </ChartContainer>
-        </Card>
+        </div>
         {/* Disk */}
-        <Card className={cn}>
+        <div className={cn}>
           {ChartTitle(
             "Disk",
             live_data?.disk?.used
@@ -547,9 +547,9 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
               />
             </AreaChart>
           </ChartContainer>
-        </Card>
+        </div>
         {/* Netwodk */}
-        <Card className={cn}>
+        <div className={cn}>
           {ChartTitle(
             t("nodeCard.networkSpeed"),
             <Flex gap="0" align="end" direction="column" className="text-sm">
@@ -622,9 +622,9 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
               />
             </LineChart>
           </ChartContainer>
-        </Card>
+        </div>
         {/* Connections */}
-        <Card className={cn}>
+        <div className={cn}>
           {ChartTitle(
             t("chart.connections"),
             <Flex gap="0" align="end" direction="column" className="text-sm">
@@ -690,9 +690,9 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
               />
             </LineChart>
           </ChartContainer>
-        </Card>
+        </div>
         {/* Process */}
-        <Card className={cn}>
+        <div className={cn}>
           {ChartTitle(t("chart.process"), live_data?.process)}
           <ChartContainer
             config={{
@@ -741,12 +741,12 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
               />
             </LineChart>
           </ChartContainer>
-        </Card>
+        </div>
         {/* GPU Charts - Each GPU gets its own chart */}
         {live_data?.gpu &&
           live_data.gpu.count > 0 &&
           live_data.gpu.detailed_info?.map((gpu, index) => (
-            <Card key={`gpu-${index}`} className={cn}>
+            <div key={`gpu-${index}`} className={cn}>
               <Flex direction="column" gap="2" className="mb-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xl font-bold">{`GPU ${index + 1}: ${
@@ -883,7 +883,7 @@ const LoadChart = ({ data = [] }: LoadChartProps) => {
                   />
                 </AreaChart>
               </ChartContainer>
-            </Card>
+            </div>
           ))}
       </div>
     </Flex>

@@ -11,8 +11,6 @@ import { AnimatePresence, motion } from "framer-motion"; // 引入 Framer Motion
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation /*useNavigate*/ } from "react-router-dom";
-import ColorSwitch from "../ColorSwitch";
-import LanguageSwitch from "../Language";
 import ThemeSwitch from "../ThemeSwitch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import menuConfig from "../../config/menuConfig.json";
@@ -394,8 +392,6 @@ const AdminPanelBar = ({ content }: AdminPanelBarProps) => {
                 />
               )}
               <ThemeSwitch />
-              <ColorSwitch />
-              <LanguageSwitch />
               <IconButton variant="soft" color="orange" onClick={logout}>
                 <ExitIcon />
               </IconButton>

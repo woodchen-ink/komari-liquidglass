@@ -4,28 +4,23 @@ import { useNodeList } from "@/contexts/NodeListContext";
 import { useLiveData } from "@/contexts/LiveDataContext";
 import { formatUptime } from "./Node";
 import { formatBytes } from "@/utils/unitHelper";
-import { Flex, Text, Card } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 
 type DetailsGridProps = {
   uuid: string;
   gap?: string;
-  box?: boolean;
   align?: "start" | "center" | "end";
 };
 
-export const DetailsGrid = ({ uuid, gap, box, align }: DetailsGridProps) => {
+export const DetailsGrid = ({ uuid, gap, align }: DetailsGridProps) => {
   const { t } = useTranslation();
 
   const { nodeList } = useNodeList();
   const { live_data } = useLiveData();
   const node = nodeList?.find((n) => n.uuid === uuid);
 
-  const Container: any = box ? Card : 'div';
-
   return (
-    <Container
-      className={`DetailsGrid max-w-[900px]`}
-    >
+    <div className="DetailsGrid w-full">
       <div className={`flex flex-wrap gap-${gap ?? "4"} basis-full justify-center ${align === "center" ? "justify-between" : ""}`}>
         <UpDownStack
           className="md:w-128 flex-[0_0_calc(50%-0.5rem)]"
@@ -116,6 +111,6 @@ export const DetailsGrid = ({ uuid, gap, box, align }: DetailsGridProps) => {
           </Flex>
         </label>
       </div>
-    </Container>
+    </div>
   );
 };

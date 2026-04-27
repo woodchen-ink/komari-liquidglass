@@ -4,7 +4,7 @@ import { useLiveData } from "../../contexts/LiveDataContext";
 import { useTranslation } from "react-i18next";
 import type { Record } from "../../types/LiveData";
 import Flag from "../../components/Flag";
-import { Card, Flex, SegmentedControl, Text } from "@radix-ui/themes";
+import { Flex, SegmentedControl, Text } from "@radix-ui/themes";
 import { useNodeList } from "@/contexts/NodeListContext";
 import { liveDataToRecords } from "@/utils/RecordHelper";
 import LoadChart from "./LoadChart";
@@ -144,57 +144,48 @@ export default function InstancePage() {
   }, [onRefresh, uuid]);
   // #region 布局
   return (
-    <div className="flex flex-row justify-center p-4 gap-4">
+    <div className="instance-page flex flex-row justify-center p-4 gap-4">
       {showServerListInDetails && !isMobile && (
         <div className="w-[300px] shrink-0 self-start sticky top-4">
-          <Card
-            className="w-full overflow-hidden shadow-lg"
+          <div
+            className="liquid-glass rounded-xl w-full overflow-hidden"
             style={{ height: "calc(100vh - 2rem)" }}
           >
             <Flex direction="column" gap="0" className="h-full min-h-0">
-              <div className="p-3 border-b border-accent-3">
+              <div
+                className="p-3"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.18)" }}
+              >
                 <Text size="2" weight="bold">
-                  {t("common.serverList", { defaultValue: "服务器列表" })}
+                  Servers
                 </Text>
               </div>
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
                 {groupedNodes.map((group, groupIndex) => (
                   <div key={groupIndex}>
-                    {group.group && (
-                      <div className="px-3 py-1 text-xs font-semibold text-accent-8 bg-accent-2 sticky top-0">
-                        {group.group}
-                      </div>
-                    )}
-                    {group.group === null && (
-                      <div className="px-3 py-1 text-xs font-semibold text-accent-8 bg-accent-2 sticky top-0">
-                        {t("common.ungrouped", { defaultValue: "未分组" })}
-                      </div>
-                    )}
+                    <div
+                      className="px-3 py-1 text-xs font-semibold sticky top-0 z-10"
+                      style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}
+                    >
+                      {group.group ?? "Ungrouped"}
+                    </div>
                     <div>
                       {group.nodes.map((node) => (
                         <div
                           key={node.uuid}
                           onClick={() => navigate(`/instance/${node.uuid}`)}
-                          className={`mx-1 my-0.5 px-2 py-0 cursor-pointer transition-colors text-sm rounded-md border-l-[4px] flex items-center gap-2 ${
-                            node.uuid === uuid
-                              ? "bg-accent-4 text-accent-10 font-bold"
-                              : "hover:bg-accent-3"
+                          className={`instance-sidebar-item mx-1 my-0.5 px-2 py-1 cursor-pointer transition-colors text-sm rounded-md flex items-center gap-2 ${
+                            node.uuid === uuid ? "active font-semibold" : ""
                           }`}
                           style={{
                             borderLeft:
                               node.uuid === uuid
-                                ? "4px solid var(--accent-8)"
-                                : "4px solid transparent",
+                                ? "3px solid rgba(255,255,255,0.85)"
+                                : "3px solid transparent",
                           }}
                         >
                           <Flag flag={node.region} />
-                          <span
-                            className={`truncate ${
-                              node.uuid === uuid ? "text-accent-10" : ""
-                            }`}
-                          >
-                            {node.name}
-                          </span>
+                          <span className="truncate">{node.name}</span>
                         </div>
                       ))}
                     </div>
@@ -202,28 +193,21 @@ export default function InstancePage() {
                 ))}
               </div>
             </Flex>
-          </Card>
+          </div>
         </div>
       )}
-      <div className="flex flex-col h-full items-center gap-2">
-        <div className="flex flex-col gap-1 md:p-4 p-3 border-0 rounded-md">
-          <h1 className="flex items-center flex-wrap">
+      <div className="flex flex-col h-full items-center gap-3 flex-1 min-w-0">
+        <div className="liquid-glass rounded-xl w-full max-w-[900px] flex flex-col gap-2 p-4">
+          <h1 className="flex items-center flex-wrap gap-2">
             <Flag flag={node?.region ?? ""} />
-            <Text size="3" weight="bold" wrap="nowrap">
+            <Text size="4" weight="bold" wrap="nowrap">
               {node?.name ?? uuid}
             </Text>
-            <Text
-              size="1"
-              style={{
-                marginLeft: "8px",
-              }}
-              className="text-accent-6"
-              wrap="nowrap"
-            >
+            <Text size="1" wrap="nowrap" style={{ opacity: 0.55 }}>
               {node?.uuid}
             </Text>
           </h1>
-          <DetailsGrid box align="center" uuid={uuid ?? ""} />
+          <DetailsGrid align="center" uuid={uuid ?? ""} />
         </div>
         <SegmentedControl.Root
           radius="full"

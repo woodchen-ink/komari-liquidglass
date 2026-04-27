@@ -1,6 +1,5 @@
 import {
   Callout,
-  Card,
   Flex,
   Text,
   Popover,
@@ -165,7 +164,7 @@ const Index = () => {
     return (
       <>
         <Callouts />
-        <Card className="summary-card mx-4 md:text-base text-sm relative">
+        <div className="summary-card liquid-glass rounded-xl p-4 mt-4 md:text-base text-sm relative">
           <div className="absolute top-2 right-2">
             <Popover.Root>
               <Popover.Trigger>
@@ -219,7 +218,7 @@ const Index = () => {
               </div>
             );
           })()}
-        </Card>
+        </div>
         <Suspense fallback={<div style={{ padding: 16 }}>Loading…</div>}>
           <NodeDisplay
             nodes={nodeList ?? []}

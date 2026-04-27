@@ -46,7 +46,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="footer p-2 border-t-1 border-t-[var(--gray-7)]">
+    <div className="footer glass-panel rounded-2xl p-2 mt-4 mx-2 mb-2 relative z-10">
       {/* Copyright and ICP Filing */}
 
       {customFooterHtml ? (
