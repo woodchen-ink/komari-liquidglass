@@ -5,7 +5,10 @@ const NodeDisplay = React.lazy(() => import("../components/NodeDisplay"));
 import { formatBytes } from "@/utils/unitHelper";
 import { useLiveData } from "../contexts/LiveDataContext";
 import { useNodeList } from "@/contexts/NodeListContext";
-import Loading from "@/components/loading";
+import {
+  SummaryCardSkeleton,
+  NodeListSkeleton,
+} from "@/components/Skeletons";
 
 // Intelligent speed formatting function
 const formatSpeed = (bytes: number): string => {
@@ -126,11 +129,20 @@ const Index = () => {
       return () => clearInterval(interval);
     }, [nodeList]);
 
-    if (isLoading) {
-      return <Loading />;
-    }
+    // 渐进加载: 首次加载时直接渲染骨架壳, 数据到位后无缝替换为真组件, 避免白屏闪烁
     if (error) {
-      return <div>Error: {error}</div>;
+      return <div className="text-red-400 mt-4 px-2">Error: {error}</div>;
+    }
+
+    // 节点列表未到位前: summary 卡 + 节点列表都用骨架
+    if (isLoading || !nodeList) {
+      return (
+        <>
+          <Callouts />
+          <SummaryCardSkeleton />
+          <NodeListSkeleton count={4} />
+        </>
+      );
     }
 
     //#endregion
@@ -149,7 +161,7 @@ const Index = () => {
             ))}
           </div>
         </div>
-        <Suspense fallback={<div style={{ padding: 16 }}>Loading…</div>}>
+        <Suspense fallback={<NodeListSkeleton count={4} />}>
           <NodeDisplay
             nodes={nodeList ?? []}
             liveData={live_data?.data ?? { online: [], data: {} }}

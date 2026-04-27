@@ -406,3 +406,41 @@ body, * {
 .pulse-animation {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+/* ==============================================
+ * 骨架屏 (Skeleton)
+ * 半透明白底块 + 横向亮带扫过, 配合玻璃背景
+ * ============================================== */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  isolation: isolate;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}

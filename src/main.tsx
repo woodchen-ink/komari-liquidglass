@@ -18,7 +18,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 import { routes } from "./routes";
-import Loading from "./components/loading";
+import PageSkeleton from "./components/PageSkeleton";
 import { PublicInfoProvider } from "./contexts/PublicInfoContext";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { PWAUpdatePrompt } from "./components/PWAUpdatePrompt";
@@ -63,7 +63,7 @@ const App = () => {
   );
   const routing = useRoutes(routes);
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<PageSkeleton />}>
       <ThemeContext.Provider value={themeContextValue}>
         <Theme
           appearance={resolvedAppearance}
