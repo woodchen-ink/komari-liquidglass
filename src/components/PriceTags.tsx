@@ -30,20 +30,11 @@ const PriceTags = ({
 
   return (
     <Flex gap="1" {...props} wrap="wrap">
-      {ip4 && (
+      {(ip4 || ip6) && (
         <Badge size="1" variant="soft" className="text-sm" color="green">
           <label className="flex justify-center items-center gap-1 text-xs">
             <div className="border-2 rounded-4xl border-green-500"></div>
-            V4
-          </label>
-        </Badge>
-      )}
-
-      {ip6 && (
-        <Badge size="1" variant="soft" className="text-sm" color="green">
-          <label className="flex justify-center items-center gap-1 text-xs">
-            <div className="border-2 rounded-4xl border-green-500"></div>
-            V6
+            {ip4 && ip6 ? "V10" : ip4 ? "V4" : "V6"}
           </label>
         </Badge>
       )}
