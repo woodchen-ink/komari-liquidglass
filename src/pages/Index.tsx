@@ -1,4 +1,4 @@
-import { Callout, Flex, Text } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, Suspense } from "react";
 const NodeDisplay = React.lazy(() => import("../components/NodeDisplay"));
@@ -138,7 +138,6 @@ const Index = () => {
     if (isLoading || !nodeList) {
       return (
         <div className="w-full max-w-5xl mx-auto">
-          <Callouts />
           <SummaryCardSkeleton />
           <NodeListSkeleton count={4} />
         </div>
@@ -149,7 +148,6 @@ const Index = () => {
 
     return (
       <div className="w-full max-w-5xl mx-auto">
-        <Callouts />
         <div className="summary-card liquid-glass rounded-xl p-4 mt-4 md:text-base text-sm relative">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
             {statusCards.map((card) => (
@@ -173,36 +171,6 @@ const Index = () => {
   return <InnerLayout />;
 };
 
-//#region Callouts
-const Callouts = () => {
-  const [t] = useTranslation();
-  const { showCallout } = useLiveData();
-  return (
-    <Flex direction="column" gap="2" className="m-2">
-      <Callout.Root m="2" hidden={showCallout} id="callout" color="tomato">
-        <Callout.Icon>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path
-              fill="currentColor"
-              d="M21.707 3.707a1 1 0 0 0-1.414-1.414L18.496 4.09a4.25 4.25 0 0 0-5.251.604l-1.068 1.069a1.75 1.75 0 0 0 0 2.474l3.585 3.586a1.75 1.75 0 0 0 2.475 0l1.068-1.068a4.25 4.25 0 0 0 .605-5.25zm-11 8a1 1 0 0 0-1.414-1.414l-1.47 1.47l-.293-.293a.75.75 0 0 0-1.06 0l-1.775 1.775a4.25 4.25 0 0 0-.605 5.25l-1.797 1.798a1 1 0 1 0 1.414 1.414l1.798-1.797a4.25 4.25 0 0 0 5.25-.605l1.775-1.775a.75.75 0 0 0 0-1.06l-.293-.293l1.47-1.47a1 1 0 0 0-1.414-1.414l-1.47 1.47l-1.586-1.586z"
-            />
-          </svg>
-        </Callout.Icon>
-        <Callout.Text>
-          <Text size="2" weight="medium">
-            {t("warn_websocket")}
-          </Text>
-        </Callout.Text>
-      </Callout.Root>
-    </Flex>
-  );
-};
-// #endregion Callouts
 export default Index;
 
 type TopCardProps = {
