@@ -1,11 +1,4 @@
-import {
-  Callout,
-  Flex,
-  Text,
-  Popover,
-  IconButton,
-  Switch,
-} from "@radix-ui/themes";
+import { Callout, Flex, Text } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, Suspense } from "react";
 const NodeDisplay = React.lazy(() => import("../components/NodeDisplay"));
@@ -13,8 +6,6 @@ import { formatBytes } from "@/utils/unitHelper";
 import { useLiveData } from "../contexts/LiveDataContext";
 import { useNodeList } from "@/contexts/NodeListContext";
 import Loading from "@/components/loading";
-import { Settings } from "lucide-react";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 // Intelligent speed formatting function
 const formatSpeed = (bytes: number): string => {
@@ -51,32 +42,18 @@ const Index = () => {
       return () => clearInterval(timer);
     }, []);
 
-    // Status cards visibility state
-    const [statusCardsVisibility, setStatusCardsVisibility] = useLocalStorage(
-      "statusCardsVisibility",
-      {
-        currentTime: true,
-        currentOnline: true,
-        regionOverview: true,
-        trafficOverview: true,
-        networkSpeed: true,
-      },
-    );
-
-    // Status cards configuration
+    // 顶部 5 个状态卡: 时间 / 在线数 / 地区数 / 总流量 / 实时网速
     const statusCards = [
       {
         key: "currentTime",
         title: t("current_time"),
         getValue: () => currentTime,
-        visible: statusCardsVisibility.currentTime,
       },
       {
         key: "currentOnline",
         title: t("current_online"),
         getValue: () =>
           `${live_data?.data?.online.length ?? 0} / ${nodeList?.length ?? 0}`,
-        visible: statusCardsVisibility.currentOnline,
       },
       {
         key: "regionOverview",
@@ -95,7 +72,6 @@ const Index = () => {
                 ),
               ).length
             : 0,
-        visible: statusCardsVisibility.regionOverview,
       },
       {
         key: "trafficOverview",
@@ -118,7 +94,6 @@ const Index = () => {
           );
           return `↑ ${formatBytes(up)} / ↓ ${formatBytes(down)}`;
         },
-        visible: statusCardsVisibility.trafficOverview,
       },
       {
         key: "networkSpeed",
@@ -141,7 +116,6 @@ const Index = () => {
           );
           return `↑ ${formatSpeed(up)} / ↓ ${formatSpeed(down)}`;
         },
-        visible: statusCardsVisibility.networkSpeed,
       },
     ];
 
@@ -165,59 +139,15 @@ const Index = () => {
       <>
         <Callouts />
         <div className="summary-card liquid-glass rounded-xl p-4 mt-4 md:text-base text-sm relative">
-          <div className="absolute top-2 right-2">
-            <Popover.Root>
-              <Popover.Trigger>
-                <IconButton variant="ghost" size="1">
-                  <Settings size={16} />
-                </IconButton>
-              </Popover.Trigger>
-              <Popover.Content width="300px">
-                <Flex direction="column" gap="3">
-                  <Text size="2" weight="bold">
-                    {t("status_settings")}
-                  </Text>
-                  <Flex direction="column" gap="2">
-                    {statusCards.map((card) => (
-                      <StatusSettingSwitch
-                        key={card.key}
-                        label={card.title}
-                        checked={card.visible}
-                        onCheckedChange={(checked) =>
-                          setStatusCardsVisibility({
-                            ...statusCardsVisibility,
-                            [card.key]: checked,
-                          })
-                        }
-                      />
-                    ))}
-                  </Flex>
-                </Flex>
-              </Popover.Content>
-            </Popover.Root>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+            {statusCards.map((card) => (
+              <TopCard
+                key={card.key}
+                title={card.title}
+                value={card.getValue()}
+              />
+            ))}
           </div>
-
-          {(() => {
-            return (
-              <div
-                className="grid gap-2"
-                style={{
-                  gridTemplateColumns: `repeat(auto-fit, minmax(230px, 1fr))`,
-                  gridAutoRows: "min-content",
-                }}
-              >
-                {statusCards
-                  .filter((card) => card.visible)
-                  .map((card) => (
-                    <TopCard
-                      key={card.key}
-                      title={card.title}
-                      value={card.getValue()}
-                    />
-                  ))}
-              </div>
-            );
-          })()}
         </div>
         <Suspense fallback={<div style={{ padding: 16 }}>Loading…</div>}>
           <NodeDisplay
@@ -307,19 +237,3 @@ const TopCard: React.FC<TopCardProps> = React.memo(
   },
 );
 
-type StatusSettingSwitchProps = {
-  label: string;
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-};
-
-const StatusSettingSwitch: React.FC<StatusSettingSwitchProps> = React.memo(
-  ({ label, checked, onCheckedChange }) => {
-    return (
-      <Flex justify="between" align="center">
-        <Text size="2">{label}</Text>
-        <Switch checked={checked} onCheckedChange={onCheckedChange} />
-      </Flex>
-    );
-  },
-);

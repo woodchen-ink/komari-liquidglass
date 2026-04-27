@@ -35,11 +35,26 @@ jobs:
       - name: Compute version metadata
         id: meta
         run: |
-          VERSION_DATE=$(date +"%y.%m.%d")    # 可读日期, 用于人看 (含点)
+          VERSION_DATE=$(date +"%y.%m.%d")    # 日期版本, 例: 26.04.27
           COMMIT_HASH=$(git rev-parse --short HEAD)
-          # version 字段写入 komari-theme.json, 沿用 SemVer 风格的点号; tag/zip 用连字符替代
-          VERSION="${VERSION_DATE}-${COMMIT_HASH}"
-          TAG="v$(echo "$VERSION" | tr '.' '-')"
+          BASE_TAG="v${VERSION_DATE}"
+
+          # 同一天多次发布时附加 -2/-3... 序号, 保证 tag 唯一且仍是正式版
+          git fetch --tags --force --quiet || true
+          SUFFIX=""
+          INDEX=1
+          CANDIDATE_TAG="${BASE_TAG}"
+          while git rev-parse -q --verify "refs/tags/${CANDIDATE_TAG}" >/dev/null; do
+            INDEX=$((INDEX + 1))
+            CANDIDATE_TAG="${BASE_TAG}-${INDEX}"
+          done
+          TAG="${CANDIDATE_TAG}"
+          if [ "${INDEX}" -gt 1 ]; then
+            SUFFIX="-${INDEX}"
+          fi
+
+          # 写入 komari-theme.json 的 version 字段, 保持 SemVer 风格的点号
+          VERSION="${VERSION_DATE}${SUFFIX}"
           ZIP_NAME="komari-liquidglass-${TAG}.zip"
 
           echo "VERSION_DATE=${VERSION_DATE}" >> "$GITHUB_ENV"
@@ -96,16 +111,22 @@ jobs:
           path: komari-liquidglass-*.zip
           retention-days: 90
 
-      - name: Generate changelog (last commit)
+      - name: Generate changelog
         id: changelog
         run: |
+          # 找到上一个发布 tag, 用于聚合本次 Release 的提交列表
+          PREV_TAG=$(git tag --list 'v*' --sort=-v:refname | grep -v "^${TAG}$" | head -n 1 || true)
           {
             echo "## Komari Liquid Glass ${TAG}"
             echo ""
             echo "**Commit**: \`${COMMIT_HASH}\` · **Build**: $(date -u +"%Y-%m-%d %H:%M UTC")"
             echo ""
             echo "### Changes"
-            git log -1 --pretty=format:"- %s (%an)"
+            if [ -n "${PREV_TAG}" ]; then
+              git log "${PREV_TAG}..HEAD" --pretty=format:"- %s (%an)" --no-merges
+            else
+              git log -1 --pretty=format:"- %s (%an)"
+            fi
             echo ""
             echo ""
             echo "### Install"

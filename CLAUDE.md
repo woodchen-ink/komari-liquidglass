@@ -60,7 +60,9 @@ ErrorBoundary → BrowserRouter → ThemeContext → Radix <Theme> → RPC2Provi
 
 ## 自动发布 (`.github/workflows/release.yaml`)
 - 触发：推送到 `radix` 分支，或在 Actions 页面手动 `workflow_dispatch`
-- 流程：`npm ci` → `npm run build` → 注入版本（`YY.MM.DD-shortsha`）到 `komari-theme.json` → 打包 `dist/ + komari-theme.json + preview.png` 为 `komari-liquidglass-vYY.MM.DD-shortsha.zip` → 同步上传 GitHub Release（tag 同名）+ artifact
+- 版本号：`YY.MM.DD`（同一天多次发布自动追加 `-2` / `-3` 序号），tag 为 `vYY.MM.DD[-N]`
+- 流程：`npm ci` → `npm run build` → 注入版本到 `komari-theme.json` → 回写 commit 到 `radix` 分支（带 `[skip ci]`）→ 打包 `dist/ + komari-theme.json + preview.png` 为 `komari-liquidglass-vYY.MM.DD[-N].zip` → 创建正式 GitHub Release（`prerelease: false` + `make_latest: true`）+ artifact
+- Release 说明：自动聚合上一个 tag 至 HEAD 之间的非合并提交作为 changelog
 - 安装：在 Releases 页面下载该 zip，上传到 Komari 后台 → 主题管理
 
 ## 已知约定
